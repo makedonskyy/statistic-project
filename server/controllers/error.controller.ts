@@ -1,13 +1,13 @@
-import { ValidationError } from 'apollo-server-micro';
+import { GraphQLError } from 'graphql';
 
 const handleCastError = (error: any) => {
   const message = `Invalid ${error.path}: ${error.value}`;
-  throw new ValidationError(message);
+  throw new GraphQLError(message);
 };
 
 const handleValidationError = (error: any) => {
   const message = Object.values(error.errors).map((el: any) => el.message);
-  throw new ValidationError(`Invalid input: ${message.join(', ')}`);
+  throw new GraphQLError(`Invalid input: ${message.join(', ')}`);
 };
 
 const errorHandler = (err: any) => {

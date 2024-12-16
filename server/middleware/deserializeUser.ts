@@ -47,7 +47,7 @@ const deserializeUser = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     return user;
-  } catch (error: any) {
+  } catch (error) {
     errorHandler(error);
   }
 };
