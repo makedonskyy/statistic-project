@@ -19,7 +19,7 @@
     "graphql": "15.x",
     "jsonwebtoken": "^8.5.1",
     "micro": "9.4.1",
-    "mongoose": "^8.8.4",
+    "mongoose": "^8.9.0",
     "next": "15.0.4",
     "react": "19.0.0",
     "react-dom": "19.0.0",
