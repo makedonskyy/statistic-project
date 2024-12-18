@@ -38,6 +38,8 @@ import { useRouter } from "next/navigation";
 import { DogBreedSelect } from "./dog-breed-select";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formSchema, RESULT } from "@/lib/constants";
+import { useMutation } from "@apollo/client";
 
 i18next.init({
   lng: "ru",
@@ -47,22 +49,8 @@ i18next.init({
 });
 z.setErrorMap(zodI18nMap);
 
-const formSchema = z.object({
-  district: z.number().int().positive(),
-  name: z
-    .string()
-    .min(2, "Имя должно содержать минимум 2 символа")
-    .max(255, "Имя не может быть более 255 символов"),
-  is_male: z.boolean(),
-  age: z
-    .number()
-    .int()
-    .positive()
-    .max(150, "Возраст не может быть более 150 лет"),
-  breed_id: z.number().int().positive(),
-});
-
 export const BreedVoteForm = () => {
+  const [createResult, { loading, error }] = useMutation(RESULT);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -73,20 +61,33 @@ export const BreedVoteForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    // тут отправка данных на сервер
-    console.log(values);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    toast.success("Спасибо за участие!", {
-      description: "Статистика доступна в разделе консоль",
-      action: {
-        label: "Перейти",
-        onClick: () => {
-          router.push("/dashboard");
-        },
-      },
-    });
-    // form.reset();
+    try {
+      if (!values) {
+        return;
+      }
+      await createResult({ variables: { input: values } });
+      if (!loading) {
+        toast.success("Спасибо за участие!", {
+          description: "Статистика доступна в разделе консоль",
+          action: {
+            label: "Перейти",
+            onClick: () => {
+              router.push("/dashboard");
+            },
+          },
+        });
+        form.reset();
+      }
+    } catch (err) {
+      if (!loading) {
+        toast.error("Ошибка", {
+          description: error?.message,
+        });
+        console.log("ERROR DURING ApolloClient REQUEST", err);
+      }
+    } finally {
+      console.log(values);
+    }
   };
 
   return (
