@@ -68,6 +68,7 @@ export const BreedVoteForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       breed_id: 0,
+      is_male: false,
     },
   });
 

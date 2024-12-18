@@ -1,19 +1,20 @@
-import 'reflect-metadata';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { ApolloServer } from 'apollo-server-micro';
-import { buildSchema } from 'type-graphql';
-import Cors from 'cors';
-import { resolvers } from '../../server/resolvers';
-import { connectDB } from '../../server/utils/connectDB';
-import deserializeUser from '../../server/middleware/deserializeUser';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import "reflect-metadata";
+import { NextApiRequest, NextApiResponse } from "next";
+import { ApolloServer } from "apollo-server-micro";
+import { buildSchema } from "type-graphql";
+import Cors from "cors";
+import { resolvers } from "../../server/resolvers";
+import { connectDB } from "../../server/utils/connectDB";
+import deserializeUser from "../../server/middleware/deserializeUser";
 
 const cors = Cors({
-  methods: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  methods: ["GET", "HEAD", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   credentials: true,
   origin: [
-    'https://studio.apollographql.com',
-    'http://localhost:8000',
-    'http://localhost:3000',
+    "https://studio.apollographql.com",
+    "http://localhost:8000",
+    "http://localhost:3000",
   ],
 });
 
@@ -31,7 +32,7 @@ function runMiddleware(req: NextApiRequest, res: NextApiResponse, fn: any) {
 
 const schema = await buildSchema({
   resolvers,
-  dateScalarMode: 'isoDate',
+  dateScalarMode: "isoDate",
 });
 
 const server = new ApolloServer({
@@ -54,10 +55,10 @@ const startServer = server.start();
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   await runMiddleware(req, res, cors);
   await connectDB();
   await startServer;
-  await server.createHandler({ path: '/api/graphql' })(req, res);
+  await server.createHandler({ path: "/api/graphql" })(req, res);
 }
