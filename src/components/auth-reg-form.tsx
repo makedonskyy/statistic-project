@@ -178,7 +178,7 @@ export default function AuthAndRegistration({
               >
                 {isLogin
                   ? "Создать аккаунт или войти как гость"
-                  : ""}
+                  : "Вернуться к авторизации"}
               </p>
 
               <Button
