@@ -104,12 +104,12 @@ export default function AuthAndRegistration({
       <Card className="mx-auto w-full max-w-md bg-white py-10 px-8 shadow-lg rounded-lg">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold mb-2">
-            {isLogin ? "Авторизация" : "Регистрация"}
+            {isLogin ? "Авторизуйтесь" : "Регистрация"}
           </CardTitle>
           <CardDescription className="text-gray-500 text-sm">
             {isLogin
-              ? "Введите данные для входа"
-              : "Создайте аккаунт для входа"}
+              ? "Или зарегистрируйте аккаунт"
+              : ""}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -120,7 +120,7 @@ export default function AuthAndRegistration({
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel></FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Введите ваш email"
@@ -138,7 +138,7 @@ export default function AuthAndRegistration({
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Пароль</FormLabel>
+                    <FormLabel></FormLabel>
                     <FormControl>
                       <Input
                         type="password"
@@ -172,6 +172,14 @@ export default function AuthAndRegistration({
                   )}
                 />
               )}
+              <p
+                className="text-center text-sm text-blue-500 cursor-pointer"
+                onClick={() => setIsLogin(!isLogin)}
+              >
+                {isLogin
+                  ? "Создать аккаунт или войти как гость"
+                  : ""}
+              </p>
 
               <Button
                 type="submit"
@@ -186,15 +194,6 @@ export default function AuthAndRegistration({
                   "Зарегистрироваться"
                 )}
               </Button>
-
-              <p
-                className="text-center text-sm text-blue-500 cursor-pointer"
-                onClick={() => setIsLogin(!isLogin)}
-              >
-                {isLogin
-                  ? "Нет аккаунта? Зарегистрироваться"
-                  : "Уже есть аккаунт? Войти"}
-              </p>
             </form>
           </Form>
         </CardContent>
