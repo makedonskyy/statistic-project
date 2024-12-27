@@ -11,7 +11,6 @@ import {
 } from "recharts";
 
 import { gql, useQuery } from "@apollo/client";
-import { it } from "node:test";
 
 const GET_RESULTS = gql`
   query GetResults {
@@ -69,6 +68,11 @@ export function Chart() {
     return sum.length;
   }
 
+  function calculateDistrict(arr, index) {
+    const sum = arr.filter((item) => item === index);
+    return sum.length;
+  }
+
   const pinscher = [
     {
       name: "Средний возраст",
@@ -81,6 +85,34 @@ export function Chart() {
     {
       name: "Количество женщин",
       value: calculateWomen(breeds[0].map((item) => item.is_male)),
+    },
+    {
+      name: "ЦАО",
+      value: calculateDistrict(
+        breeds[0].map((item) => item.district),
+        0,
+      ),
+    },
+    {
+      name: "САО",
+      value: calculateDistrict(
+        breeds[0].map((item) => item.district),
+        1,
+      ),
+    },
+    {
+      name: "СВАО",
+      value: calculateDistrict(
+        breeds[0].map((item) => item.district),
+        2,
+      ),
+    },
+    {
+      name: "ВАО",
+      value: calculateDistrict(
+        breeds[0].map((item) => item.district),
+        3,
+      ),
     },
   ];
 
@@ -97,6 +129,34 @@ export function Chart() {
       name: "Количество женщин",
       value: calculateWomen(breeds[1].map((item) => item.is_male)),
     },
+    {
+      name: "ЦАО",
+      value: calculateDistrict(
+        breeds[1].map((item) => item.district),
+        0,
+      ),
+    },
+    {
+      name: "САО",
+      value: calculateDistrict(
+        breeds[1].map((item) => item.district),
+        1,
+      ),
+    },
+    {
+      name: "СВАО",
+      value: calculateDistrict(
+        breeds[1].map((item) => item.district),
+        2,
+      ),
+    },
+    {
+      name: "ВАО",
+      value: calculateDistrict(
+        breeds[1].map((item) => item.district),
+        3,
+      ),
+    },
   ];
 
   const borderCollie = [
@@ -111,6 +171,34 @@ export function Chart() {
     {
       name: "Количество женщин",
       value: calculateWomen(breeds[2].map((item) => item.is_male)),
+    },
+    {
+      name: "ЦАО",
+      value: calculateDistrict(
+        breeds[2].map((item) => item.district),
+        0,
+      ),
+    },
+    {
+      name: "САО",
+      value: calculateDistrict(
+        breeds[2].map((item) => item.district),
+        1,
+      ),
+    },
+    {
+      name: "СВАО",
+      value: calculateDistrict(
+        breeds[2].map((item) => item.district),
+        2,
+      ),
+    },
+    {
+      name: "ВАО",
+      value: calculateDistrict(
+        breeds[2].map((item) => item.district),
+        3,
+      ),
     },
   ];
 
@@ -127,6 +215,34 @@ export function Chart() {
       name: "Количество женщин",
       value: calculateWomen(breeds[3].map((item) => item.is_male)),
     },
+    {
+      name: "ЦАО",
+      value: calculateDistrict(
+        breeds[3].map((item) => item.district),
+        0,
+      ),
+    },
+    {
+      name: "САО",
+      value: calculateDistrict(
+        breeds[3].map((item) => item.district),
+        1,
+      ),
+    },
+    {
+      name: "СВАО",
+      value: calculateDistrict(
+        breeds[3].map((item) => item.district),
+        2,
+      ),
+    },
+    {
+      name: "ВАО",
+      value: calculateDistrict(
+        breeds[3].map((item) => item.district),
+        3,
+      ),
+    },
   ];
 
   const vesti = [
@@ -142,6 +258,34 @@ export function Chart() {
       name: "Количество женщин",
       value: calculateWomen(breeds[4].map((item) => item.is_male)),
     },
+    {
+      name: "ЦАО",
+      value: calculateDistrict(
+        breeds[4].map((item) => item.district),
+        0,
+      ),
+    },
+    {
+      name: "САО",
+      value: calculateDistrict(
+        breeds[4].map((item) => item.district),
+        1,
+      ),
+    },
+    {
+      name: "СВАО",
+      value: calculateDistrict(
+        breeds[4].map((item) => item.district),
+        2,
+      ),
+    },
+    {
+      name: "ВАО",
+      value: calculateDistrict(
+        breeds[4].map((item) => item.district),
+        3,
+      ),
+    },
   ];
 
   const beagle = [
@@ -156,6 +300,34 @@ export function Chart() {
     {
       name: "Количество женщин",
       value: calculateWomen(breeds[5].map((item) => item.is_male)),
+    },
+    {
+      name: "ЦАО",
+      value: calculateDistrict(
+        breeds[5].map((item) => item.district),
+        0,
+      ),
+    },
+    {
+      name: "САО",
+      value: calculateDistrict(
+        breeds[5].map((item) => item.district),
+        1,
+      ),
+    },
+    {
+      name: "СВАО",
+      value: calculateDistrict(
+        breeds[5].map((item) => item.district),
+        2,
+      ),
+    },
+    {
+      name: "ВАО",
+      value: calculateDistrict(
+        breeds[5].map((item) => item.district),
+        3,
+      ),
     },
   ];
 
