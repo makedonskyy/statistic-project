@@ -11,6 +11,7 @@ import {
 } from "recharts";
 
 import { gql, useQuery } from "@apollo/client";
+import React from "react";
 
 const GET_RESULTS = gql`
   query GetResults {
@@ -30,8 +31,16 @@ const GET_RESULTS = gql`
   }
 `;
 
-export function Chart() {
-  const { data, loading, error } = useQuery(GET_RESULTS);
+export function Chart({ refreshCharts }: { refreshCharts: number }) {
+  const { data, loading, error, refetch } = useQuery(GET_RESULTS, {
+    fetchPolicy: "network-only",
+    pollInterval: 0,
+    notifyOnNetworkStatusChange: true,
+  });
+
+  React.useEffect(() => {
+    refetch();
+  }, [refreshCharts, refetch]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error...</div>;
@@ -59,18 +68,15 @@ export function Chart() {
   }
 
   function calculateMen(arr) {
-    const sum = arr.filter((item) => item === true);
-    return sum.length;
+    return arr.filter((item) => item === true).length;
   }
 
   function calculateWomen(arr) {
-    const sum = arr.filter((item) => item === false);
-    return sum.length;
+    return arr.filter((item) => item === false).length;
   }
 
   function calculateDistrict(arr, index) {
-    const sum = arr.filter((item) => item === index);
-    return sum.length;
+    return arr.filter((item) => item === index).length;
   }
 
   const pinscher = [
@@ -90,28 +96,28 @@ export function Chart() {
       name: "ЦАО",
       value: calculateDistrict(
         breeds[0].map((item) => item.district),
-        0,
+        1,
       ),
     },
     {
       name: "САО",
       value: calculateDistrict(
         breeds[0].map((item) => item.district),
-        1,
+        2,
       ),
     },
     {
       name: "СВАО",
       value: calculateDistrict(
         breeds[0].map((item) => item.district),
-        2,
+        3,
       ),
     },
     {
       name: "ВАО",
       value: calculateDistrict(
         breeds[0].map((item) => item.district),
-        3,
+        4,
       ),
     },
   ];
@@ -133,28 +139,28 @@ export function Chart() {
       name: "ЦАО",
       value: calculateDistrict(
         breeds[1].map((item) => item.district),
-        0,
+        1,
       ),
     },
     {
       name: "САО",
       value: calculateDistrict(
         breeds[1].map((item) => item.district),
-        1,
+        2,
       ),
     },
     {
       name: "СВАО",
       value: calculateDistrict(
         breeds[1].map((item) => item.district),
-        2,
+        3,
       ),
     },
     {
       name: "ВАО",
       value: calculateDistrict(
         breeds[1].map((item) => item.district),
-        3,
+        4,
       ),
     },
   ];
@@ -176,28 +182,28 @@ export function Chart() {
       name: "ЦАО",
       value: calculateDistrict(
         breeds[2].map((item) => item.district),
-        0,
+        1,
       ),
     },
     {
       name: "САО",
       value: calculateDistrict(
         breeds[2].map((item) => item.district),
-        1,
+        2,
       ),
     },
     {
       name: "СВАО",
       value: calculateDistrict(
         breeds[2].map((item) => item.district),
-        2,
+        3,
       ),
     },
     {
       name: "ВАО",
       value: calculateDistrict(
         breeds[2].map((item) => item.district),
-        3,
+        4,
       ),
     },
   ];
@@ -219,28 +225,28 @@ export function Chart() {
       name: "ЦАО",
       value: calculateDistrict(
         breeds[3].map((item) => item.district),
-        0,
+        1,
       ),
     },
     {
       name: "САО",
       value: calculateDistrict(
         breeds[3].map((item) => item.district),
-        1,
+        2,
       ),
     },
     {
       name: "СВАО",
       value: calculateDistrict(
         breeds[3].map((item) => item.district),
-        2,
+        3,
       ),
     },
     {
       name: "ВАО",
       value: calculateDistrict(
         breeds[3].map((item) => item.district),
-        3,
+        4,
       ),
     },
   ];
@@ -262,28 +268,28 @@ export function Chart() {
       name: "ЦАО",
       value: calculateDistrict(
         breeds[4].map((item) => item.district),
-        0,
+        1,
       ),
     },
     {
       name: "САО",
       value: calculateDistrict(
         breeds[4].map((item) => item.district),
-        1,
+        2,
       ),
     },
     {
       name: "СВАО",
       value: calculateDistrict(
         breeds[4].map((item) => item.district),
-        2,
+        3,
       ),
     },
     {
       name: "ВАО",
       value: calculateDistrict(
         breeds[4].map((item) => item.district),
-        3,
+        4,
       ),
     },
   ];
@@ -305,28 +311,28 @@ export function Chart() {
       name: "ЦАО",
       value: calculateDistrict(
         breeds[5].map((item) => item.district),
-        0,
+        1,
       ),
     },
     {
       name: "САО",
       value: calculateDistrict(
         breeds[5].map((item) => item.district),
-        1,
+        2,
       ),
     },
     {
       name: "СВАО",
       value: calculateDistrict(
         breeds[5].map((item) => item.district),
-        2,
+        3,
       ),
     },
     {
       name: "ВАО",
       value: calculateDistrict(
         breeds[5].map((item) => item.district),
-        3,
+        4,
       ),
     },
   ];

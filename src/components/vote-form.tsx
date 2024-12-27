@@ -49,7 +49,11 @@ i18next.init({
 });
 z.setErrorMap(zodI18nMap);
 
-export const BreedVoteForm = () => {
+export const BreedVoteForm = ({
+  onSubmitSuccess,
+}: {
+  onSubmitSuccess: () => void;
+}) => {
   const [createResult, { loading, error }] = useMutation(RESULT);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -77,6 +81,7 @@ export const BreedVoteForm = () => {
           },
         });
         form.reset();
+        onSubmitSuccess();
       }
     } catch (err) {
       if (!loading) {
