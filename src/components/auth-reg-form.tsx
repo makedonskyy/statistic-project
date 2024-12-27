@@ -115,8 +115,9 @@ export const AuthAndRegistration: React.FC<AuthAndRegistrationProps> = ({
             },
           },
         });
-        toast.success("Регистрация успешна. Теперь войдите в систему!");
+        toast.success("Регистрация успешна. Добро пожаловать!");
         setIsLogin(true);
+        onLoginSuccess();
       }
     } catch (error: any) {
       toast.error("Ошибка: " + error.message);
