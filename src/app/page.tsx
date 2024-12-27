@@ -48,13 +48,26 @@ export default function Home() {
         setLoading(false);
       },
       onError: (err) => {
-        console.error("Ошибка проверки авторизации:", err);
+        if (localStorage.getItem("access_token") === null) {
+          console.log("Токен отсутствует. Пользователь не авторизован.");
+        } else {
+          console.error("Ошибка проверки авторизации:", err);
+        }
         setIsAuthenticated(false);
         setLoading(false);
       },
     });
 
     useEffect(() => {
+      const token = localStorage.getItem("access_token");
+  
+      if (!token) {
+        console.log("Токен отсутствует. Ожидаем авторизации пользователя.");
+        setIsAuthenticated(false);
+        setLoading(false);
+        return;
+      }
+
       getMe();
     }, [getMe]);
 
