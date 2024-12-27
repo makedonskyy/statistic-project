@@ -33,6 +33,7 @@ export default function Home() {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem("access_token");
     setIsAuthenticated(false);
   };
 
