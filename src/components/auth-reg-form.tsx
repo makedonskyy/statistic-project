@@ -16,7 +16,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { gql, useMutation } from "@apollo/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
@@ -47,7 +53,6 @@ const authSchema = z.object({
   email: z.string().email("Некорректный email"),
   password: z.string().min(8, "Пароль должен быть не менее 8 символов"),
 });
-
 
 const registrationSchema = z
   .object({
@@ -90,7 +95,6 @@ export const AuthAndRegistration: React.FC<AuthAndRegistrationProps> = ({
   const [signupUser, { loading: signupLoading }] = useMutation(SIGNUP_MUTATION);
 
   const onSubmit = async (values: any) => {
-
     try {
       if (isLogin) {
         const { data } = await loginUser({
@@ -126,29 +130,26 @@ export const AuthAndRegistration: React.FC<AuthAndRegistrationProps> = ({
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center"
+      className="flex min-h-screen items-center justify-center"
       style={{
         background: "rgba(223, 245, 255, 1)",
         fontFamily: "'Inter', sans-serif",
       }}
     >
-      <Card className="mx-auto w-full max-w-md bg-white py-10 px-8 shadow-lg rounded-lg">
+      <Card className="mx-auto w-full max-w-md rounded-lg bg-white px-8 py-10 shadow-lg">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold mb-2">
+          <CardTitle className="mb-2 text-2xl font-bold">
             {isLogin ? "Авторизуйтесь" : "Регистрация"}
           </CardTitle>
-          <CardDescription className="text-gray-500 text-sm">
-            {isLogin
-              ? "Или зарегистрируйте аккаунт"
-              : ""}
+          <CardDescription className="text-sm text-gray-500">
+            {isLogin ? "Или зарегистрируйте аккаунт" : ""}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            
-            {!isLogin && (
-              <FormField
+              {!isLogin && (
+                <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
@@ -158,14 +159,14 @@ export const AuthAndRegistration: React.FC<AuthAndRegistrationProps> = ({
                         <Input
                           placeholder="Введите ваше имя"
                           {...field}
-                          className="block w-full px-4 py-3 border border-gray-300 rounded-lg"
+                          className="block w-full rounded-lg border border-gray-300 px-4 py-3"
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-            )}
+              )}
 
               <FormField
                 control={form.control}
@@ -177,7 +178,7 @@ export const AuthAndRegistration: React.FC<AuthAndRegistrationProps> = ({
                       <Input
                         placeholder="Введите ваш email"
                         {...field}
-                        className="block w-full px-4 py-3 border border-gray-300 rounded-lg"
+                        className="block w-full rounded-lg border border-gray-300 px-4 py-3"
                       />
                     </FormControl>
                     <FormMessage />
@@ -196,7 +197,7 @@ export const AuthAndRegistration: React.FC<AuthAndRegistrationProps> = ({
                         type="password"
                         placeholder="Введите пароль"
                         {...field}
-                        className="block w-full px-4 py-3 border border-gray-300 rounded-lg"
+                        className="block w-full rounded-lg border border-gray-300 px-4 py-3"
                       />
                     </FormControl>
                     <FormMessage />
@@ -216,7 +217,7 @@ export const AuthAndRegistration: React.FC<AuthAndRegistrationProps> = ({
                           type="password"
                           placeholder="Подтвердите пароль"
                           {...field}
-                          className="block w-full px-4 py-3 border border-gray-300 rounded-lg"
+                          className="block w-full rounded-lg border border-gray-300 px-4 py-3"
                         />
                       </FormControl>
                       <FormMessage />
@@ -225,7 +226,7 @@ export const AuthAndRegistration: React.FC<AuthAndRegistrationProps> = ({
                 />
               )}
               <p
-                className="text-center text-sm text-blue-500 cursor-pointer"
+                className="cursor-pointer text-center text-sm text-blue-500"
                 onClick={() => setIsLogin(!isLogin)}
               >
                 {isLogin
@@ -235,11 +236,11 @@ export const AuthAndRegistration: React.FC<AuthAndRegistrationProps> = ({
 
               <Button
                 type="submit"
-                className="w-full py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600"
+                className="w-full rounded-lg bg-blue-500 py-3 font-semibold text-white shadow-md hover:bg-blue-600"
                 disabled={form.formState.isSubmitting}
               >
                 {form.formState.isSubmitting ? (
-                  <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+                  <Loader2 className="mx-auto h-4 w-4 animate-spin" />
                 ) : isLogin ? (
                   "Войти"
                 ) : (
@@ -252,4 +253,4 @@ export const AuthAndRegistration: React.FC<AuthAndRegistrationProps> = ({
       </Card>
     </div>
   );
-}
+};
