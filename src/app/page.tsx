@@ -7,6 +7,7 @@ import { AuthAndRegistration } from "@/components/auth-reg-form";
 import client from "@/lib/apolloClient";
 import { ApolloProvider } from "@apollo/client";
 import { gql, useLazyQuery } from "@apollo/client";
+import { Chart } from "@/components/chart";
 
 const GET_ME_QUERY = gql`
   query GetMe {
@@ -61,7 +62,7 @@ export default function Home() {
 
     useEffect(() => {
       const token = localStorage.getItem("access_token");
-  
+
       if (!token) {
         console.log("Токен отсутствует. Ожидаем авторизации пользователя.");
         setIsAuthenticated(false);
@@ -96,21 +97,21 @@ export default function Home() {
           color: "#333",
         },
       };
-    
+
       const globalStyles = `
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
         }
       `;
-    
+
       if (typeof window !== "undefined") {
         const styleSheet = document.createElement("style");
         styleSheet.type = "text/css";
         styleSheet.innerText = globalStyles;
         document.head.appendChild(styleSheet);
       }
-    
+
       return (
         <div style={styles.loadingContainer}>
           <div style={styles.spinner}></div>
@@ -122,14 +123,17 @@ export default function Home() {
     return !isAuthenticated ? (
       <AuthAndRegistration onLoginSuccess={handleLoginSuccess} />
     ) : (
-      <BreedVoteForm />
+      <BreedVoteForm onSubmitSuccess={handleFormSubmit} />
     );
   };
+
+  // <BreedVoteForm onSubmitSuccess={handleFormSubmit} />
+  // <Chart refreshCharts={refreshCharts} />
 
   return (
     <MainLayout onLogout={handleLogout}>
       <ApolloProvider client={client}>
-      <AuthenticatedContent />
+        <AuthenticatedContent />
       </ApolloProvider>
     </MainLayout>
   );
