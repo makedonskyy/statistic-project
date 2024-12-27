@@ -4,7 +4,6 @@ import { LogIn } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "./ui/button";
 import { gql, useMutation, useLazyQuery } from "@apollo/client";
-import { useRouter } from "next/navigation";
 
 const LOGOUT_QUERY = gql`
   query LogoutUser {
@@ -17,7 +16,6 @@ type NavigationProps = {
 };
 
 export const Navigation: React.FC<NavigationProps> = ({ onLogout }) => {
-  const router = useRouter();
 
   const [logoutUser, { loading, error }] = useLazyQuery(LOGOUT_QUERY, {
     onCompleted: () => {
@@ -31,7 +29,6 @@ export const Navigation: React.FC<NavigationProps> = ({ onLogout }) => {
   const handleLogout = async () => {
     try {
       await logoutUser();
-      console.log("Выход выполнен успешно");
     } catch (err) {
       console.error("Ошибка во время выхода:", err);
     }

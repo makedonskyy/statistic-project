@@ -24,7 +24,6 @@ const GET_ME_QUERY = gql`
   }
 `;
 
-
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -91,10 +90,12 @@ export default function Home() {
         }
       `;
     
-      const styleSheet = document.createElement("style");
-      styleSheet.type = "text/css";
-      styleSheet.innerText = globalStyles;
-      document.head.appendChild(styleSheet);
+      if (typeof window !== "undefined") {
+        const styleSheet = document.createElement("style");
+        styleSheet.type = "text/css";
+        styleSheet.innerText = globalStyles;
+        document.head.appendChild(styleSheet);
+      }
     
       return (
         <div style={styles.loadingContainer}>
