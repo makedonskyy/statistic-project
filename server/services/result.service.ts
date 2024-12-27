@@ -8,7 +8,7 @@ import { resultCookieOptions } from "../utils/constants";
 export default class ResultService {
   async createResult(
     input: Partial<Result>,
-    { req, res }: Context
+    { req, res }: Context,
   ): Promise<{ status: string; result: Result }> {
     try {
       const result = await ResultModel.create({ ...input });
@@ -31,7 +31,7 @@ export default class ResultService {
   }
 
   async getResults({ req, res }: Context) {
-    const user = await deserializeUser(req, res);
+    // const user = await deserializeUser(req, res);
 
     try {
       const ResultsQuery = await ResultModel.find();
