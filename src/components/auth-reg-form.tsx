@@ -15,14 +15,33 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { gql, useMutation } from "@apollo/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
-type AuthAndRegistrationProps = {
-    onLoginSuccess: () => void;
-  };
+const LOGIN_MUTATION = gql`
+  mutation LoginUser($login_input: LoginInput!) {
+    loginUser(input: $login_input) {
+      access_token
+      status
+    }
+  }
+`;
+
+const SIGNUP_MUTATION = gql`
+  mutation SignupUser($signup_input: SignUpInput!) {
+    signupUser(input: $signup_input) {
+      status
+      user {
+        _id
+        email
+        name
+      }
+    }
+  }
+`;
 
 const authSchema = z.object({
   email: z.string().email("Некорректный email"),
@@ -33,6 +52,7 @@ const authSchema = z.object({
 const registrationSchema = z
   .object({
     email: z.string().email("Некорректный email"),
+    name: z.string().nonempty(),
     password: z.string().min(8, "Пароль должен быть не менее 8 символов"),
     confirmPassword: z.string().min(8, "Подтвердите пароль"),
   })
@@ -46,9 +66,14 @@ const registrationSchema = z
     }
   });
 
-export default function AuthAndRegistration({
-    onLoginSuccess,
-  }: AuthAndRegistrationProps) {
+// Define component props
+type AuthAndRegistrationProps = {
+  onLoginSuccess: () => void;
+};
+
+export const AuthAndRegistration: React.FC<AuthAndRegistrationProps> = ({
+  onLoginSuccess,
+}) => {
   const [isLogin, setIsLogin] = useState(true);
 
   const form = useForm({
@@ -57,39 +82,44 @@ export default function AuthAndRegistration({
       email: "",
       password: "",
       confirmPassword: "",
+      name: "",
     },
   });
 
+  const [loginUser, { loading: loginLoading }] = useMutation(LOGIN_MUTATION);
+  const [signupUser, { loading: signupLoading }] = useMutation(SIGNUP_MUTATION);
+
   const onSubmit = async (values: any) => {
+
     try {
-      const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
-
-      if (response.ok) {
-        toast.success(
-          isLogin
-            ? "Авторизация успешна. Добро пожаловать!"
-            : "Регистрация успешна. Теперь войдите в систему."
-        );
-
-        if (!isLogin) {
-          setIsLogin(true);
-        }
-      } else {
-        const data = await response.json();
-        toast.error("Ошибка", {
-          description: data.message || "Попробуйте ещё раз.",
+      if (isLogin) {
+        const { data } = await loginUser({
+          variables: {
+            login_input: {
+              email: values.email,
+              password: values.password,
+            },
+          },
         });
+        localStorage.setItem("access_token", data.loginUser.access_token);
+        toast.success("Авторизация успешна. Добро пожаловать!");
+        onLoginSuccess();
+      } else {
+        const { data } = await signupUser({
+          variables: {
+            signup_input: {
+              email: values.email,
+              name: values.name,
+              password: values.password,
+              passwordConfirm: values.confirmPassword,
+            },
+          },
+        });
+        toast.success("Регистрация успешна. Теперь войдите в систему!");
+        setIsLogin(true);
       }
-    } catch (error) {
-      toast.error("Ошибка сервера", {
-        description: "Попробуйте позже.",
-      });
-      console.error(error);
+    } catch (error: any) {
+      toast.error("Ошибка: " + error.message);
     }
   };
 
@@ -115,6 +145,27 @@ export default function AuthAndRegistration({
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            
+            {!isLogin && (
+              <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel></FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Введите ваше имя"
+                          {...field}
+                          className="block w-full px-4 py-3 border border-gray-300 rounded-lg"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+            )}
+
               <FormField
                 control={form.control}
                 name="email"
@@ -158,7 +209,7 @@ export default function AuthAndRegistration({
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Подтвердите пароль</FormLabel>
+                      <FormLabel></FormLabel>
                       <FormControl>
                         <Input
                           type="password"
