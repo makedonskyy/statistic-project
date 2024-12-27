@@ -33,6 +33,10 @@ export default function Home() {
     setIsAuthenticated(true);
   };
 
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+  };
+
   const AuthenticatedContent = () => {
     const [getMe] = useLazyQuery(GET_ME_QUERY, {
       fetchPolicy: "network-only",
@@ -108,7 +112,7 @@ export default function Home() {
   };
 
   return (
-    <MainLayout>
+    <MainLayout onLogout={handleLogout}>
       <ApolloProvider client={client}>
       <AuthenticatedContent />
       </ApolloProvider>

@@ -12,10 +12,21 @@ const LOGOUT_QUERY = gql`
   }
 `;
 
-export const Navigation = () => {
+type NavigationProps = {
+  onLogout: () => void;
+};
+
+export const Navigation: React.FC<NavigationProps> = ({ onLogout }) => {
   const router = useRouter();
 
-  const [logoutUser, {loading, error}] = useLazyQuery(LOGOUT_QUERY)
+  const [logoutUser, { loading, error }] = useLazyQuery(LOGOUT_QUERY, {
+    onCompleted: () => {
+      onLogout();
+    },
+    onError: (err) => {
+      console.error("Ошибка выхода:", err);
+    },
+  });
 
   const handleLogout = async () => {
     try {
