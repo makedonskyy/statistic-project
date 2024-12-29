@@ -31,7 +31,7 @@ const GET_RESULTS = gql`
   }
 `;
 
-export function Chart({ refreshCharts }: { refreshCharts: number }) {
+export function Chart({ refreshCharts }: { refreshCharts?: number }) {
   const { data, loading, error, refetch } = useQuery(GET_RESULTS, {
     fetchPolicy: "network-only",
     pollInterval: 0,

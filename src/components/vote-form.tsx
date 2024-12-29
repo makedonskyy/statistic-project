@@ -52,7 +52,7 @@ z.setErrorMap(zodI18nMap);
 export const BreedVoteForm = ({
   onSubmitSuccess,
 }: {
-  onSubmitSuccess: () => void;
+  onSubmitSuccess?: () => void;
 }) => {
   const [createResult, { loading, error }] = useMutation(RESULT);
   const router = useRouter();
@@ -81,7 +81,7 @@ export const BreedVoteForm = ({
           },
         });
         form.reset();
-        onSubmitSuccess();
+       // onSubmitSuccess();
       }
     } catch (err) {
       if (!loading) {
