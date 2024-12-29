@@ -24,7 +24,6 @@ import {
   CardTitle,
 } from "./ui/card";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
 const LOGIN_MUTATION = gql`
@@ -80,7 +79,6 @@ export const AuthAndRegistration: React.FC<AuthAndRegistrationProps> = ({
   onLoginSuccess,
 }) => {
   const [isLogin, setIsLogin] = useState(true);
-
   const form = useForm({
     resolver: zodResolver(isLogin ? authSchema : registrationSchema),
     defaultValues: {
