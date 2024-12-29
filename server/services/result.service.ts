@@ -31,7 +31,7 @@ export default class ResultService {
   }
 
   async getResults({ req, res }: Context) {
-    // const user = await deserializeUser(req, res);
+     const user = await deserializeUser(req, res);
 
     try {
       const ResultsQuery = await ResultModel.find();
