@@ -29,5 +29,5 @@ export const formSchema = z.object({
     .int()
     .positive()
     .max(150, "Возраст не может быть более 150 лет"),
-  breed_id: z.number().int().positive(),
+  breed_id: z.number().int().min(0).max(5),
 });

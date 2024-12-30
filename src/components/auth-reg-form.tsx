@@ -107,7 +107,7 @@ export const AuthAndRegistration: React.FC<AuthAndRegistrationProps> = ({
         toast.success("Авторизация успешна. Добро пожаловать!");
         onLoginSuccess();
       } else {
-        const { data } = await signupUser({
+         await signupUser({
           variables: {
             signup_input: {
               email: values.email,
@@ -117,6 +117,15 @@ export const AuthAndRegistration: React.FC<AuthAndRegistrationProps> = ({
             },
           },
         });
+        const { data } = await loginUser({
+          variables: {
+            login_input: {
+              email: values.email,
+              password: values.password,
+            },
+          },
+        });
+        localStorage.setItem("access_token", data.loginUser.access_token);
         toast.success("Регистрация успешна. Добро пожаловать!");
         setIsLogin(true);
         onLoginSuccess();

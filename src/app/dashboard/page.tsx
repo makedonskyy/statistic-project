@@ -130,7 +130,7 @@ export default function Dashboard() {
   };
 
   return (
-    <MainLayout onLogout={handleLogout}>
+    <MainLayout onLogout={handleLogout} onLogin={isAuthenticated} >
       <ApolloProvider client={client}>
         <AuthenticatedContent />
       </ApolloProvider>

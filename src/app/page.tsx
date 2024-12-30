@@ -11,8 +11,7 @@ export default function Home() {
     <MainLayout
       onLogout={() => {
         console.log("До свидания!");
-      }}
-    >
+      } } onLogin={false}    >
       <ApolloProvider client={client}>
         <BreedVoteForm />
       </ApolloProvider>
