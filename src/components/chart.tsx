@@ -9,9 +9,27 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-
 import { gql, useQuery } from "@apollo/client";
 import React from "react";
+
+// Определяем типы для данных результата
+interface Result {
+  _id: string;
+  breed_id: number;
+  district: number;
+  name: string;
+  is_male: boolean;
+  age: number;
+  createdAt: string;
+}
+
+interface GetResultsResponse {
+  getResults: {
+    status: string;
+    totalResults: number;
+    results: Result[];
+  };
+}
 
 const GET_RESULTS = gql`
   query GetResults {
@@ -31,403 +49,95 @@ const GET_RESULTS = gql`
   }
 `;
 
-export function Chart({ refreshCharts }: { refreshCharts?: number }) {
-  const { data, loading, error, refetch } = useQuery(GET_RESULTS, {
+// Определяем типы для статистики по породам
+interface BreedStatistics {
+  averageAge: number;
+  maleCount: number;
+  femaleCount: number;
+  districtCount: number[];
+}
+
+const calculateStatistics = (data: Result[]): BreedStatistics => {
+  const ageSum = data.reduce((sum, item) => sum + item.age, 0);
+  const maleCount = data.filter(item => item.is_male).length;
+  const femaleCount = data.filter(item => !item.is_male).length;
+
+  const districtCount = Array(4).fill(0); // Предполагаем 4 района
+  data.forEach(item => {
+    if (item.district >= 1 && item.district <= 4) {
+      districtCount[item.district - 1]++;
+    }
+  });
+
+  return {
+    averageAge: data.length ? ageSum / data.length : 0,
+    maleCount,
+    femaleCount,
+    districtCount,
+  };
+};
+
+interface ChartProps {
+  refreshCharts?: number;
+}
+
+export function Chart({ refreshCharts }: ChartProps) {
+  const { data, loading, error, refetch } = useQuery<GetResultsResponse>(GET_RESULTS, {
     fetchPolicy: "network-only",
     pollInterval: 0,
     notifyOnNetworkStatusChange: true,
   });
 
   React.useEffect(() => {
-    refetch();
+    if (refreshCharts) {
+      refetch();
+    }
   }, [refreshCharts, refetch]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error...</div>;
 
-  const chartData = data?.getResults.results;
+  const chartData = data?.getResults.results || []; // Добавлено значение по умолчанию
+  const breeds: Result[][] = Array.from({ length: 6 }, () => []);
 
-  const breeds = {
-    0: [],
-    1: [],
-    2: [],
-    3: [],
-    4: [],
-    5: [],
-  };
-
-  chartData.forEach((item) => {
-    if (item.breed_id in breeds) {
+  chartData.forEach(item => {
+    if (item.breed_id >= 0 && item.breed_id < breeds.length) {
       breeds[item.breed_id].push(item);
     }
   });
 
-  function calculateAge(arr) {
-    const sum = arr.reduce((a, b) => a + b, 0);
-    return sum / arr.length;
-  }
-
-  function calculateMen(arr) {
-    return arr.filter((item) => item === true).length;
-  }
-
-  function calculateWomen(arr) {
-    return arr.filter((item) => item === false).length;
-  }
-
-  function calculateDistrict(arr, index) {
-    return arr.filter((item) => item === index).length;
-  }
-
-  const pinscher = [
-    {
-      name: "Средний возраст",
-      value: calculateAge(breeds[0].map((item) => item.age)),
-    },
-    {
-      name: "Количество мужчин",
-      value: calculateMen(breeds[0].map((item) => item.is_male)),
-    },
-    {
-      name: "Количество женщин",
-      value: calculateWomen(breeds[0].map((item) => item.is_male)),
-    },
-    {
-      name: "ЦАО",
-      value: calculateDistrict(
-        breeds[0].map((item) => item.district),
-        1,
-      ),
-    },
-    {
-      name: "САО",
-      value: calculateDistrict(
-        breeds[0].map((item) => item.district),
-        2,
-      ),
-    },
-    {
-      name: "СВАО",
-      value: calculateDistrict(
-        breeds[0].map((item) => item.district),
-        3,
-      ),
-    },
-    {
-      name: "ВАО",
-      value: calculateDistrict(
-        breeds[0].map((item) => item.district),
-        4,
-      ),
-    },
-  ];
-
-  const goldenRetriever = [
-    {
-      name: "Средний возраст",
-      value: calculateAge(breeds[1].map((item) => item.age)),
-    },
-    {
-      name: "Количество мужчин",
-      value: calculateMen(breeds[1].map((item) => item.is_male)),
-    },
-    {
-      name: "Количество женщин",
-      value: calculateWomen(breeds[1].map((item) => item.is_male)),
-    },
-    {
-      name: "ЦАО",
-      value: calculateDistrict(
-        breeds[1].map((item) => item.district),
-        1,
-      ),
-    },
-    {
-      name: "САО",
-      value: calculateDistrict(
-        breeds[1].map((item) => item.district),
-        2,
-      ),
-    },
-    {
-      name: "СВАО",
-      value: calculateDistrict(
-        breeds[1].map((item) => item.district),
-        3,
-      ),
-    },
-    {
-      name: "ВАО",
-      value: calculateDistrict(
-        breeds[1].map((item) => item.district),
-        4,
-      ),
-    },
-  ];
-
-  const borderCollie = [
-    {
-      name: "Средний возраст",
-      value: calculateAge(breeds[2].map((item) => item.age)),
-    },
-    {
-      name: "Количество мужчин",
-      value: calculateMen(breeds[2].map((item) => item.is_male)),
-    },
-    {
-      name: "Количество женщин",
-      value: calculateWomen(breeds[2].map((item) => item.is_male)),
-    },
-    {
-      name: "ЦАО",
-      value: calculateDistrict(
-        breeds[2].map((item) => item.district),
-        1,
-      ),
-    },
-    {
-      name: "САО",
-      value: calculateDistrict(
-        breeds[2].map((item) => item.district),
-        2,
-      ),
-    },
-    {
-      name: "СВАО",
-      value: calculateDistrict(
-        breeds[2].map((item) => item.district),
-        3,
-      ),
-    },
-    {
-      name: "ВАО",
-      value: calculateDistrict(
-        breeds[2].map((item) => item.district),
-        4,
-      ),
-    },
-  ];
-
-  const dachshund = [
-    {
-      name: "Средний возраст",
-      value: calculateAge(breeds[3].map((item) => item.age)),
-    },
-    {
-      name: "Количество мужчин",
-      value: calculateMen(breeds[3].map((item) => item.is_male)),
-    },
-    {
-      name: "Количество женщин",
-      value: calculateWomen(breeds[3].map((item) => item.is_male)),
-    },
-    {
-      name: "ЦАО",
-      value: calculateDistrict(
-        breeds[3].map((item) => item.district),
-        1,
-      ),
-    },
-    {
-      name: "САО",
-      value: calculateDistrict(
-        breeds[3].map((item) => item.district),
-        2,
-      ),
-    },
-    {
-      name: "СВАО",
-      value: calculateDistrict(
-        breeds[3].map((item) => item.district),
-        3,
-      ),
-    },
-    {
-      name: "ВАО",
-      value: calculateDistrict(
-        breeds[3].map((item) => item.district),
-        4,
-      ),
-    },
-  ];
-
-  const vesti = [
-    {
-      name: "Средний возраст",
-      value: calculateAge(breeds[4].map((item) => item.age)),
-    },
-    {
-      name: "Количество мужчин",
-      value: calculateMen(breeds[4].map((item) => item.is_male)),
-    },
-    {
-      name: "Количество женщин",
-      value: calculateWomen(breeds[4].map((item) => item.is_male)),
-    },
-    {
-      name: "ЦАО",
-      value: calculateDistrict(
-        breeds[4].map((item) => item.district),
-        1,
-      ),
-    },
-    {
-      name: "САО",
-      value: calculateDistrict(
-        breeds[4].map((item) => item.district),
-        2,
-      ),
-    },
-    {
-      name: "СВАО",
-      value: calculateDistrict(
-        breeds[4].map((item) => item.district),
-        3,
-      ),
-    },
-    {
-      name: "ВАО",
-      value: calculateDistrict(
-        breeds[4].map((item) => item.district),
-        4,
-      ),
-    },
-  ];
-
-  const beagle = [
-    {
-      name: "Средний возраст",
-      value: calculateAge(breeds[5].map((item) => item.age)),
-    },
-    {
-      name: "Количество мужчин",
-      value: calculateMen(breeds[5].map((item) => item.is_male)),
-    },
-    {
-      name: "Количество женщин",
-      value: calculateWomen(breeds[5].map((item) => item.is_male)),
-    },
-    {
-      name: "ЦАО",
-      value: calculateDistrict(
-        breeds[5].map((item) => item.district),
-        1,
-      ),
-    },
-    {
-      name: "САО",
-      value: calculateDistrict(
-        breeds[5].map((item) => item.district),
-        2,
-      ),
-    },
-    {
-      name: "СВАО",
-      value: calculateDistrict(
-        breeds[5].map((item) => item.district),
-        3,
-      ),
-    },
-    {
-      name: "ВАО",
-      value: calculateDistrict(
-        breeds[5].map((item) => item.district),
-        4,
-      ),
-    },
-  ];
+  const breedNames = ["Пинчер", "Золотистый ретривер", "Бордер-колли", "Такса", "Вести", "Бигль"];
+  const colors = ["green", "blue", "yellow", "pink", "purple", "blue"];
 
   return (
     <div className="flex flex-col gap-10 pb-36 pt-36">
-      <div className="flex flex-col gap-10">
-        <div className="rounded-lg border bg-white p-4 shadow-sm">
-          <h2 className="mb-4 text-xl font-bold">Пинчер</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={pinscher}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis domain={[0, 30]} ticks={[0, 10, 20, 30]} />
-              <Tooltip />
-              <Bar dataKey="value" fill="green" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+      {breeds.map((breedData, index) => {
+        const stats = calculateStatistics(breedData);
+        const districtNames = ["ЦАО", "САО", "СВАО", "ВАО"];
+        const districtValues = districtNames.map((_, i) => stats.districtCount[i] || 0);
 
-      <div className="flex flex-col gap-10">
-        <div className="rounded-lg border bg-white p-4 shadow-sm">
-          <h2 className="mb-4 text-xl font-bold">Золотистый ретривер</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={goldenRetriever}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis domain={[0, 30]} ticks={[0, 10, 20, 30]} />
-              <Tooltip />
-              <Bar dataKey="value" fill="blue" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-10">
-        <div className="rounded-lg border bg-white p-4 shadow-sm">
-          <h2 className="mb-4 text-xl font-bold">Бордер-колли</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={borderCollie}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis domain={[0, 30]} ticks={[0, 10, 20, 30]} />
-              <Tooltip />
-              <Bar dataKey="value" fill="yellow" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-10">
-        <div className="rounded-lg border bg-white p-4 shadow-sm">
-          <h2 className="mb-4 text-xl font-bold">Такса</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={dachshund}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis domain={[0, 30]} ticks={[0, 10, 20, 30]} />
-              <Tooltip />
-              <Bar dataKey="value" fill="pink" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-10">
-        <div className="rounded-lg border bg-white p-4 shadow-sm">
-          <h2 className="mb-4 text-xl font-bold">Вести</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={vesti}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis domain={[0, 30]} ticks={[0, 10, 20, 30]} />
-              <Tooltip />
-              <Bar dataKey="value" fill="purple" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-10">
-        <div className="rounded-lg border bg-white p-4 shadow-sm">
-          <h2 className="mb-4 text-xl font-bold">Бигль</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={beagle}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis domain={[0, 30]} ticks={[0, 10, 20, 30]} />
-              <Tooltip />
-              <Bar dataKey="value" fill="blue" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+        return (
+          <div key={index} className="flex flex-col gap-10">
+            <div className="rounded-lg border bg-white p-4 shadow-sm">
+              <h2 className="mb-4 text-xl font-bold">{breedNames[index]}</h2>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={[
+                  { name: "Средний возраст", value: stats.averageAge },
+                  { name: "Количество мужчин", value: stats.maleCount },
+                  { name: "Количество женщин", value: stats.femaleCount },
+                  ...districtNames.map((name, i) => ({ name, value: districtValues[i] })),
+                ]}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis domain={[0, 30]} ticks={[0, 10, 20, 30]} />
+                  <Tooltip />
+                  <Bar dataKey="value" fill={colors[index]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
