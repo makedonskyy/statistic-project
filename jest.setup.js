@@ -1,0 +1,1 @@
+import '@testing-library/jest-dom'; // Импортируем матчеры для тестирования

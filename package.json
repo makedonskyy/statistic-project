@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "jest"
   },
   "dependencies": {
     "@apollo/client": "^3.12.3",
@@ -49,6 +50,9 @@
     "zustand": "^5.0.2"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/dotenv-safe": "^8.1.6",
@@ -61,12 +65,16 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-define-config": "^2.1.0",
     "eslint-plugin-prettier": "^5.2.1",
+    "extend-expect": "link:@testing-library/jest-dom/extend-expect",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "only-allow": "^1.2.1",
     "postcss": "8",
     "prettier": "^3.4.2",
     "prettier-eslint": "^16.3.0",
     "prettier-plugin-tailwindcss": "^0.6.9",
     "tailwindcss": "3.4.1",
+    "ts-node": "^10.9.2",
     "typescript": "5",
     "typescript-eslint": "^8.18.0"
   },

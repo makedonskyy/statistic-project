@@ -36,7 +36,7 @@
     "**/*.tsx",
     "next-env.d.ts",
     ".next/types/**/*.ts"
-  ],
+, "src/__tests__/button.test.jsx", "src/__tests__/vote-form.test.jsx"  ],
   "exclude": [
     "node_modules"
   ]
