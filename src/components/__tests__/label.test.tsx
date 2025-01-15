@@ -12,6 +12,7 @@ describe("Label component", () => {
     );
   });
 
+
   it("applies custom className correctly", () => {
     render(
       <Label className="custom-class" htmlFor="test-input">
