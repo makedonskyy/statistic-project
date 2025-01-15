@@ -46,6 +46,7 @@
     "sonner": "^1.7.1",
     "tailwind-merge": "2.5.5",
     "tailwindcss-animate": "1.0.7",
+    "testing": "link:@apollo/client/testing",
     "type-graphql": "^1.1.1",
     "zod": "^3.24.1",
     "zod-i18n-map": "^2.27.0",
